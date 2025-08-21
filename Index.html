@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gaju AI Prediction</title>
+
+    <!-- Import Stylish Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffffff" stroke-width="0.1" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 25px;
+            background: rgba(15, 52, 96, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15),
+                        0 0 50px rgba(0, 150, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #00ffff;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px #0080ff;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            border-color: #0080ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #0080ff, #00ffff);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .error {
+            color: #ff4757;
+            margin-top: 15px;
+            display: none;
+            font-size: 14px;
+            background: rgba(255, 71, 87, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        /* Hide prediction system initially */
+        #prediction-page {
+            display: none;
+        }
+
+        .ai-subtitle {
+            font-size: 14px;
+            color: #64b5f6;
+            font-weight: 300;
+            margin-bottom: 20px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .box {
+            display: inline-block;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 8px;
+            border-radius: 12px;
+            border: 2px solid #00ffff;
+            text-shadow: 0 0 10px currentColor;
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .period-box {
+            color: #ffd700;
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .big {
+            color: #4fc3f7;
+            border-color: #4fc3f7;
+            background: rgba(79, 195, 247, 0.1);
+        }
+        .small {
+            color: #ff9800;
+            border-color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+        .number-box {
+            color: #4caf50;
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .predict-btn {
+            padding: 15px 25px;
+            font-size: 16px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: white;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .predict-btn:hover {
+            background: linear-gradient(45deg, #0080ff, #00ffff);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+        }
+
+        #live-result {
+            font-size: 14px;
+            font-weight: 400;
+            color: #64b5f6;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(100, 181, 246, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(100, 181, 246, 0.2);
+        }
+
+        .prediction-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .prediction-item {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .prediction-label {
+            font-size: 12px;
+            color: #64b5f6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-box" class="container">
+        <h1>🤖 GAJU AI</h1>
+        <p class="ai-subtitle">Advanced Prediction System</p>
+        <input type="password" id="password" placeholder="Enter Access Code">
+        <button onclick="checkLogin()">🚀 Access AI System</button>
+        <p class="error" id="error-message">❌ Invalid Access Code! Please try again.</p>
+    </div>
+
+    <!-- PREDICTION SYSTEM (HIDDEN INITIALLY) -->
+    <div id="prediction-page" class="container">
+        <h1>🤖 GAJU AI PREDICTION</h1>
+        <p class="ai-subtitle">Powered by Advanced Machine Learning</p>
+
+        <div class="prediction-grid">
+            <div class="prediction-item">
+                <div class="prediction-label">Current Period</div>
+                <div id="result">PERIOD: <span class="box period-box">--</span></div>
+            </div>
+
+            <div class="prediction-item">
+                <div class="prediction-label">AI Signal</div>
+                <div id="signal">SIGNAL: <span class="box">--</span></div>
+            </div>
+
+            <div class="prediction-item">
+                <div class="prediction-label">Predicted Numbers</div>
+                <div id="prediction">NUMBERS: <span class="box number-box">--/--</span></div>
+            </div>
+        </div>
+
+        <div id="live-result">🔄 Initializing AI System...</div>
+        <button class="predict-btn" onclick="fetchPrediction()">🎯 Generate Prediction</button>
+    </div>
+
+    <script>
+        function checkLogin() {
+            var pass = document.getElementById("password").value;
+            if (pass === "Gaju") {
+                document.getElementById("login-box").style.display = "none"; // Hide login
+                document.getElementById("prediction-page").style.display = "block"; // Show prediction system
+                fetchPrediction(); // Load prediction data
+            } else {
+                document.getElementById("error-message").style.display = "block";
+            }
+        }
+
+        const API_URL = 'https://api.bdg88zf.com/api/webapi/GetGameIssue';
+        const REQUEST_DATA = {
+            typeId: 1,
+            language: 0,
+            random: "e7fe6c090da2495ab8290dac551ef1ed",
+            signature: "1F390E2B2D8A55D693E57FD905AE73A7",
+            timestamp: 1723726679
+        };
+
+        let periodResults = {}; // Store results for each period
+
+        function fetchPrediction() {
+            fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+                body: JSON.stringify(REQUEST_DATA)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data) {
+                    let issueNumber = data.data.issueNumber || "Unknown";
+
+                    // Check if result already exists for this period
+                    if (!periodResults[issueNumber]) {
+                        let num1 = Math.floor(Math.random() * 10);
+                        let num2 = (num1 + 3) % 10;
+
+                        let sumDigits = issueNumber.split('').reduce((acc, num) => acc + parseInt(num), 0);
+                        let bigSmallPrediction = sumDigits % 2 === 0 ? "Big" : "Small";
+
+                        // Store result for this period
+                        periodResults[issueNumber] = {
+                            bigSmallPrediction,
+                            predictedNumbers: `${num1}/${num2}`
+                        };
+                    }
+
+                    let { bigSmallPrediction, predictedNumbers } = periodResults[issueNumber];
+
+                    document.getElementById("result").innerHTML = `PERIOD: <span class="box period-box">${issueNumber}</span>`;
+                    document.getElementById("signal").innerHTML = `SIGNAL: <span class="box ${bigSmallPrediction.toLowerCase()}">${bigSmallPrediction}</span>`;
+                    document.getElementById("prediction").innerHTML = `NUMBERS: <span class="box number-box">${predictedNumbers}</span>`;
+                    document.getElementById("live-result").innerHTML = "✅ AI PREDICTION UPDATED!";
+                } else {
+                    document.getElementById("live-result").innerHTML = "⚠️ AI SYSTEM ERROR - RETRYING...";
+                }
+            })
+            .catch(error => {
+                document.getElementById("live-result").innerHTML = "⚠️ CONNECTION ERROR - AI OFFLINE";
+                console.error("API Fetch Error:", error);
+            });
+        }
+
+        setInterval(fetchPrediction, 10000);
+    </script>
+
+</body>
+</html>
