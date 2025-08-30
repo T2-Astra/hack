@@ -251,6 +251,28 @@
             transform: translateY(-2px);
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
         }
+        
+        .telegram-link {
+            display: block;
+            margin: 15px auto 5px;
+            padding: 10px;
+            background: rgba(0, 136, 204, 0.15);
+            color: #0088cc;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 136, 204, 0.4);
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(0, 136, 204, 0.5);
+            box-shadow: 0 0 15px rgba(0, 136, 204, 0.2);
+        }
+        
+        .telegram-link:hover, .telegram-link:active {
+            background: rgba(0, 136, 204, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 136, 204, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -263,6 +285,7 @@
         <input type="password" id="password" placeholder="Enter Access Code">
         <button onclick="checkLogin()">🚀 Access AI System</button>
         <p class="error" id="error-message">❌ Invalid Access Code! Please try again.</p>
+        <a href="https://telegram.me/+dHQsZTD7NU82NWY1" class="telegram-link">📱 Join Telegram Channel (Creator)</a>
     </div>
 
     <!-- PREDICTION SYSTEM (HIDDEN INITIALLY) -->
