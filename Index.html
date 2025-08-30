@@ -229,6 +229,28 @@
             letter-spacing: 1px;
             margin-bottom: 8px;
         }
+        
+        .deposit-link {
+            display: block;
+            margin: 10px auto 15px;
+            padding: 12px;
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+        
+        .deposit-link:hover, .deposit-link:active {
+            background: rgba(255, 215, 0, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -237,6 +259,7 @@
     <div id="login-box" class="container">
         <h1>🤖 GAJU AI</h1>
         <p class="ai-subtitle">Advanced Prediction System</p>
+        <a href="https://www.rajagames8.com/#/register?invitationCode=151273164345" class="deposit-link">💰 Deposit ₹500 to get Access Code (Click Here)</a>
         <input type="password" id="password" placeholder="Enter Access Code">
         <button onclick="checkLogin()">🚀 Access AI System</button>
         <p class="error" id="error-message">❌ Invalid Access Code! Please try again.</p>
