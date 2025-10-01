@@ -1,2 +1,2 @@
 # hack  
-personal used
+personal use
